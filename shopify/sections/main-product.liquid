@@ -1,0 +1,259 @@
+{{ 'ak-product.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'ak-product.js' | asset_url }}" defer></script>
+{% liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign active_media = current_variant.featured_media | default: product.featured_media
+  assign form_id = 'ProductForm-' | append: section.id
+%}
+<ak-product class="ak-product" data-section="{{ section.id }}" data-url="{{ product.url }}" data-variants="{{ product.variants | json | escape }}">
+  <nav class="ak-breadcrumb" aria-label="Breadcrumb">
+    <a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">/</span>
+    <a href="{{ routes.all_products_collection_url }}">Collection</a><span aria-hidden="true">/</span>
+    <span aria-current="page">{{ product.title | escape }}</span>
+  </nav>
+  <div class="ak-product-grid">
+    <div class="ak-gallery" aria-label="Product media">
+      <div class="ak-media-stage">
+        {% for media in product.media %}
+          <div class="ak-media" id="Media-{{ section.id }}-{{ media.id }}" data-media="{{ media.id }}" {% if media.id == active_media.id %}data-active{% endif %}>
+            {% case media.media_type %}
+              {% when 'image' %}
+                {% if media.id == active_media.id %}
+                  {{ media | image_url: width: 1800 | image_tag: widths: '480, 750, 1100, 1500, 1800', sizes: '(min-width: 900px) 52vw, 100vw', loading: 'eager', fetchpriority: 'high', alt: media.alt }}
+                {% else %}
+                  {{ media | image_url: width: 1800 | image_tag: widths: '480, 750, 1100, 1500, 1800', sizes: '(min-width: 900px) 52vw, 100vw', loading: 'lazy', alt: media.alt }}
+                {% endif %}
+              {% when 'video' %}{{ media | video_tag: controls: true, image_size: '1100x', preload: 'none' }}
+              {% when 'external_video' %}{{ media | external_video_tag: loading: 'lazy' }}
+              {% when 'model' %}{{ media | model_viewer_tag: reveal: 'interaction', toggleable: true }}
+            {% endcase %}
+          </div>
+        {% else %}
+          <div class="ak-media">{{ 'product-1' | placeholder_svg_tag: 'ak-placeholder' }}</div>
+        {% endfor %}
+        <span class="ak-image-caption">{{ shop.name | escape }} / {{ product.type | default: 'Collection' | escape }}</span>
+      </div>
+      {% if product.media.size > 1 %}
+        <div class="ak-thumbnails" aria-label="Choose product media">
+          {% for media in product.media %}
+            <button type="button" data-show-media="{{ media.id }}" aria-controls="Media-{{ section.id }}-{{ media.id }}" aria-label="View media {{ forloop.index }}: {{ media.alt | default: product.title | escape }}" aria-pressed="{% if media.id == active_media.id %}true{% else %}false{% endif %}">
+              {{ media.preview_image | image_url: width: 180 | image_tag: loading: 'lazy', alt: '' }}
+              {% unless media.media_type == 'image' %}<span>{{ media.media_type | replace: '_', ' ' }}</span>{% endunless %}
+            </button>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+    <div class="ak-product-info">
+      <p class="ak-eyebrow">{{ product.vendor | default: shop.name | escape }}{% if product.type != blank %}<span> / </span>{{ product.type | escape }}{% endif %}</p>
+      <h1>{{ product.title | escape }}</h1>
+      {% if product.metafields.custom.subtitle != blank %}<p class="ak-subtitle">{{ product.metafields.custom.subtitle | escape }}</p>{% endif %}
+      {% if product.description != blank %}
+        <section class="ak-story" aria-labelledby="ScentExperience-{{ section.id }}">
+          <h2 id="ScentExperience-{{ section.id }}">The scent experience</h2>
+          <div class="ak-richtext">{{ product.description }}</div>
+        </section>
+      {% endif %}
+      {% if product.metafields.custom.fragrance_notes != blank %}
+        <section class="ak-accords" aria-labelledby="OlfactoryNotes-{{ section.id }}">
+          <h2 id="OlfactoryNotes-{{ section.id }}">Olfactory notes</h2>
+          <div class="ak-richtext">{{ product.metafields.custom.fragrance_notes | metafield_tag }}</div>
+        </section>
+      {% endif %}
+      <div class="ak-price" aria-live="polite">
+        {% if current_variant %}
+          <span>{{ current_variant.price | money_with_currency }}</span>
+          {% if current_variant.compare_at_price > current_variant.price %}<s>{{ current_variant.compare_at_price | money }}</s><span class="ak-sale">Sale</span>{% endif %}
+          {% if current_variant.unit_price_measurement %}<small>{{ current_variant.unit_price | money }} / {% if current_variant.unit_price_measurement.reference_value != 1 %}{{ current_variant.unit_price_measurement.reference_value }}{% endif %}{{ current_variant.unit_price_measurement.reference_unit }}</small>{% endif %}
+        {% else %}<span>Unavailable combination</span>{% endif %}
+      </div>
+      <p class="ak-tax-note">{% if cart.taxes_included %}Taxes included. {% endif %}{% if shop.shipping_policy.body != blank %}<a href="{{ shop.shipping_policy.url }}">Shipping</a> calculated at checkout.{% else %}Shipping calculated at checkout.{% endif %}</p>
+      {% unless product.has_only_default_variant %}
+        <div class="ak-variant-picker" data-variant-picker>
+          {% for product_option in product.options_with_values %}
+            <fieldset class="ak-option-selector">
+              <legend>{{ product_option.name | escape }}</legend>
+              <div class="ak-option-values">
+                {% for value in product_option.values %}
+                  {% assign option_id = 'Option-' | append: section.id | append: '-' | append: product_option.position | append: '-' | append: forloop.index0 %}
+                  <input class="ak-option-input" id="{{ option_id }}" type="radio" name="options[{{ product_option.name | escape }}]" value="{{ value | escape }}" data-product-option="{{ product_option.position | minus: 1 }}" {% if product_option.selected_value == value %}checked{% endif %}>
+                  <label class="ak-option-pill" for="{{ option_id }}">{{ value | escape }}</label>
+                {% endfor %}
+              </div>
+            </fieldset>
+          {% endfor %}
+        </div>
+        <noscript>
+          <form method="get" action="{{ product.url }}" class="ak-no-script-variant">
+            <label class="ak-field-label" for="Variant-{{ section.id }}">Choose a variant</label>
+            <div class="ak-select-row">
+              <select id="Variant-{{ section.id }}" name="variant">
+                {% for variant in product.variants %}
+                  <option value="{{ variant.id }}" {% if variant.id == current_variant.id %}selected{% endif %}>{{ variant.title | escape }} — {{ variant.price | money_with_currency }}{% unless variant.available %} — Sold out{% endunless %}</option>
+                {% endfor %}
+              </select>
+              <button type="submit" class="ak-update">Update</button>
+            </div>
+          </form>
+        </noscript>
+      {% endunless %}
+      {% form 'product', product, id: form_id, class: 'ak-buy-form' %}
+        {{ form.errors | default_errors }}
+        <input type="hidden" name="id" value="{{ current_variant.id }}">
+        <p class="ak-availability">{% if current_variant.available %}<span aria-hidden="true">●</span> In stock and ready to ship{% else %}Currently unavailable{% endif %}</p>
+        <label class="ak-field-label" for="Quantity-{{ section.id }}">Quantity</label>
+        <div class="ak-purchase-row">
+          <div class="ak-quantity">
+            <button type="button" data-quantity="-1" aria-label="Decrease quantity">−</button>
+            <input id="Quantity-{{ section.id }}" name="quantity" type="number" min="{{ current_variant.quantity_rule.min | default: 1 }}" step="{{ current_variant.quantity_rule.increment | default: 1 }}" {% if current_variant.quantity_rule.max %}max="{{ current_variant.quantity_rule.max }}"{% endif %} value="{{ current_variant.quantity_rule.min | default: 1 }}" inputmode="numeric">
+            <button type="button" data-quantity="1" aria-label="Increase quantity">+</button>
+          </div>
+          <button class="ak-add" name="add" type="submit" {% unless current_variant.available %}disabled{% endunless %}>{% if current_variant.available %}Add to bag <span aria-hidden="true">↗</span>{% else %}Sold out{% endif %}</button>
+        </div>
+        {% if section.settings.dynamic_checkout and current_variant.available %}<div class="ak-express">{{ form | payment_button }}</div>{% endif %}
+      {% endform %}
+      <p class="ak-feedback" role="status" aria-live="polite"></p>
+      {% if section.settings.help_text != blank %}<p class="ak-help">{{ section.settings.help_text | escape }}</p>{% endif %}
+      <ul class="ak-promises" aria-label="Shopping benefits">
+        <li><span>Fast shipping</span><small>Tracked delivery</small></li>
+        <li><span>Secure checkout</span><small>Powered by Shopify</small></li>
+        <li><span>Easy returns</span><small>Simple support</small></li>
+      </ul>
+      {% if section.blocks.size > 0 or shop.shipping_policy.body != blank or shop.refund_policy.body != blank %}
+        <div class="ak-details">
+          {% for block in section.blocks %}
+            {% case block.type %}
+              {% when 'accordion' %}<details {{ block.shopify_attributes }}><summary>{{ block.settings.heading | escape }}<span aria-hidden="true">+</span></summary><div class="ak-richtext">{{ block.settings.content }}</div></details>
+              {% when '@app' %}{% render block %}
+            {% endcase %}
+          {% endfor %}
+          {% if shop.shipping_policy.body != blank %}<details><summary>Shipping &amp; delivery<span aria-hidden="true">+</span></summary><div class="ak-richtext">{{ shop.shipping_policy.body }}</div></details>{% endif %}
+          {% if shop.refund_policy.body != blank %}<details><summary>Returns<span aria-hidden="true">+</span></summary><div class="ak-richtext">{{ shop.refund_policy.body }}</div></details>{% endif %}
+        </div>
+      {% endif %}
+      <div class="ak-share"><span>Share this scent</span>
+        {% assign share_url = request.origin | append: product.url | url_encode %}
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ share_url }}" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 22v-9h3l.5-4H14V7c0-1.2.4-2 2-2h2V1.4A24 24 0 0 0 15 1c-3 0-5 1.8-5 5v3H7v4h3v9z"/></svg></a>
+        <a href="https://x.com/intent/post?url={{ share_url }}&amp;text={{ product.title | url_encode }}" target="_blank" rel="noopener noreferrer" aria-label="Share on X"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3L12 14.6 5.5 22H2.4l8.2-9.4L1 2h6.5l4.4 6.7L18.9 2Zm-1.1 18h1.7L6.6 3.9H4.8L17.8 20Z"/></svg></a>
+        <button type="button" data-copy-link aria-label="Copy product link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m10 13 4-4M8 16l-1 1a4 4 0 0 1-6-6l5-5a4 4 0 0 1 6 0M16 8l1-1a4 4 0 0 1 6 6l-5 5a4 4 0 0 1-6 0" transform="translate(1 0) scale(.9)"/></svg></button>
+      </div>
+    </div>
+  </div>
+  {% assign related_collection = product.collections.first %}
+  {% if related_collection != blank and related_collection.products_count > 1 %}
+    {% assign frequently_bought_count = 0 %}
+    {% for related_product in related_collection.products %}
+      {% if related_product.id != product.id and related_product.featured_image != blank and related_product.selected_or_first_available_variant.available %}
+        {% assign frequently_bought_count = frequently_bought_count | plus: 1 %}
+      {% endif %}
+      {% if frequently_bought_count == 4 %}{% break %}{% endif %}
+    {% endfor %}
+    {% if frequently_bought_count > 0 %}
+      <section class="ak-bundle" aria-labelledby="FrequentlyBought-{{ section.id }}">
+        <div class="ak-bundle-heading">
+          <p class="ak-eyebrow">Continue exploring</p>
+          <h2 id="FrequentlyBought-{{ section.id }}">Frequently bought together</h2>
+        </div>
+        <div class="ak-related-grid ak-bundle-items">
+          {% assign frequently_bought_count = 0 %}
+          {% for related_product in related_collection.products %}
+            {% if related_product.id != product.id and related_product.featured_image != blank and related_product.selected_or_first_available_variant.available %}
+              {% assign frequently_bought_variant = related_product.selected_or_first_available_variant %}
+              <div class="ak-related-card has-image ak-bundle-product">
+                <a class="ak-related-product-link" href="{{ related_product.url }}">
+                  <img
+                    class="ak-related-image"
+                    src="{{ related_product.featured_image | image_url: width: 480 }}"
+                    alt="{{ related_product.featured_image.alt | default: related_product.title | escape }}"
+                    loading="eager"
+                    width="{{ related_product.featured_image.width }}"
+                    height="{{ related_product.featured_image.height }}"
+                  >
+                  <span class="ak-related-index">{% if frequently_bought_count < 9 %}0{% endif %}{{ frequently_bought_count | plus: 1 }}</span>
+                  <span class="ak-related-name">{{ related_product.title | escape }}</span>
+                  <span class="ak-related-type">{{ related_product.type | default: related_product.vendor | escape }}</span>
+                </a>
+                <span class="ak-related-price">{{ frequently_bought_variant.price | money_with_currency }}</span>
+                <button
+                  class="ak-bundle-add"
+                  type="button"
+                  data-quick-add
+                  data-variant-id="{{ frequently_bought_variant.id }}"
+                  aria-label="Add {{ related_product.title | escape }} to bag"
+                >Add to bag</button>
+              </div>
+              {% assign frequently_bought_count = frequently_bought_count | plus: 1 %}
+            {% endif %}
+            {% if frequently_bought_count == 4 %}{% break %}{% endif %}
+          {% endfor %}
+        </div>
+        <p class="ak-bundle-status" role="status" aria-live="polite"></p>
+      </section>
+    {% endif %}
+    <section class="ak-related" aria-labelledby="RelatedScents-{{ section.id }}">
+      <div class="ak-related-heading">
+        <div>
+          <p class="ak-eyebrow">Continue exploring</p>
+          <h2 id="RelatedScents-{{ section.id }}">You might also like</h2>
+        </div>
+        <a href="{{ related_collection.url }}">View all <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="ak-related-grid">
+        {% assign related_count = 0 %}
+        {% for related_product in related_collection.products %}
+          {% if related_product.id != product.id and related_product.featured_image != blank %}
+            {% assign recommended_variant = related_product.selected_or_first_available_variant %}
+            <div class="ak-related-card has-image">
+              <a class="ak-related-product-link" href="{{ related_product.url }}">
+                <img
+                  class="ak-related-image"
+                  src="{{ related_product.featured_image | image_url: width: 480 }}"
+                  alt="{{ related_product.featured_image.alt | default: related_product.title | escape }}"
+                  loading="eager"
+                  width="{{ related_product.featured_image.width }}"
+                  height="{{ related_product.featured_image.height }}"
+                >
+                <span class="ak-related-index">{% if related_count < 9 %}0{% endif %}{{ related_count | plus: 1 }}</span>
+                <span class="ak-related-name">{{ related_product.title | escape }}</span>
+                <span class="ak-related-type">{{ related_product.type | default: related_product.vendor | escape }}</span>
+                <span class="ak-related-price">{{ related_product.price | money_with_currency }}</span>
+              </a>
+              {% if recommended_variant.available %}
+                <button
+                  class="ak-related-add"
+                  type="button"
+                  data-quick-add
+                  data-variant-id="{{ recommended_variant.id }}"
+                  aria-label="Add {{ related_product.title | escape }} to bag"
+                >Add to bag</button>
+              {% else %}
+                <button class="ak-related-add" type="button" disabled aria-label="{{ related_product.title | escape }} is sold out">Sold out</button>
+              {% endif %}
+            </div>
+            {% assign related_count = related_count | plus: 1 %}
+            {% if related_count == 4 %}{% break %}{% endif %}
+          {% endif %}
+        {% endfor %}
+      </div>
+      <p class="ak-related-status" role="status" aria-live="polite"></p>
+    </section>
+  {% endif %}
+</ak-product>
+<script type="application/ld+json">{{ product | structured_data }}</script>
+{% schema %}
+{
+  "name": "AK product",
+  "tag": "section",
+  "settings": [
+    { "type": "checkbox", "id": "dynamic_checkout", "label": "Show accelerated checkout", "default": true },
+    { "type": "text", "id": "help_text", "label": "Help text", "default": "Find your everyday signature." }
+  ],
+  "blocks": [
+    { "type": "@app" },
+    { "type": "accordion", "name": "Information accordion", "settings": [
+      { "type": "text", "id": "heading", "label": "Heading", "default": "How to wear" },
+      { "type": "richtext", "id": "content", "label": "Content" }
+    ] }
+  ]
+}
+{% endschema %}

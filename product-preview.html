@@ -1,0 +1,872 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AK & Co. — Product preview</title>
+<style>@font-face{font-family:SenseSerif;src:url('shopify/assets/ak-serif.woff2')}@font-face{font-family:SenseSans;src:url('shopify/assets/ak-sans.woff2')}*{box-sizing:border-box}html{background:#e8e7e3}body{width:100%;max-width:1440px;margin:0 auto;background:#e8e7e3;color:#1a1a1a;font-family:SenseSans,Arial,sans-serif}.preview-note{padding:8px 24px;text-align:center;background:#28372b;color:#f5f4f0;font-size:10px;letter-spacing:.6px}.preview-header{display:flex;justify-content:space-between;align-items:center;padding:25px 5.5%;border-bottom:1px solid #d8d7d0}.preview-header a{color:inherit;text-decoration:none}.preview-logo{font:32px SenseSerif,Georgia,serif}.preview-header nav{display:flex;gap:26px;font-size:12px}.preview-footer{padding:48px 5.5%;border-top:1px solid #d8d7d0;display:flex;justify-content:space-between;font-size:12px}.preview-footer a{color:inherit}.preview-image-placeholder{display:grid;width:100%;height:100%;place-items:center;background:#e8e7e1;color:#77776f;font:italic 32px SenseSerif,Georgia,serif} @font-face {
+  font-family: SenseSerif;
+  src: url("shopify/assets/ak-serif.woff2") format("woff2");
+  font-weight: 400 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: SenseSerif;
+  src: url("shopify/assets/ak-serif-italic.woff2") format("woff2");
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: SenseSans;
+  src: url("shopify/assets/ak-sans.woff2") format("woff2");
+  font-display: swap;
+}
+.ak-product {
+  --ak-paper: #f5f4f0;
+  --ak-ink: #201e1a;
+  --ak-olive: #28372b;
+  --ak-muted: #77776f;
+  --ak-line: #d8d7d0;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 24px clamp(20px, 5vw, 80px) 88px;
+  box-sizing: border-box;
+  background: var(--ak-paper);
+  color: var(--ak-ink);
+  font: 14px/1.65 SenseSans, Arial, sans-serif;
+}
+.ak-product *,
+.ak-product *::before,
+.ak-product *::after {
+  box-sizing: border-box;
+}
+.ak-product [hidden] {
+  display: none !important;
+}
+.ak-product a {
+  color: inherit;
+  text-decoration: none;
+}
+.ak-product button,
+.ak-product input,
+.ak-product select {
+  color: inherit;
+  font: inherit;
+}
+.ak-product button,
+.ak-product select {
+  cursor: pointer;
+}
+.ak-product :focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+.ak-product button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.ak-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 22px;
+  color: var(--ak-muted);
+  font-size: 11px;
+}
+.ak-breadcrumb a:hover {
+  text-decoration: underline;
+}
+.ak-product-grid {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.8fr);
+  align-items: start;
+  gap: clamp(42px, 7vw, 112px);
+}
+.ak-gallery {
+  position: sticky;
+  top: 28px;
+  min-width: 0;
+}
+.ak-media-stage {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #e8e7e1;
+}
+.ak-media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+}
+.ak-media img,
+.ak-media video,
+.ak-media iframe,
+.ak-media model-viewer,
+.ak-placeholder {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: contain;
+}
+.ak-image-caption {
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+  padding: 6px 10px;
+  border-radius: 2px;
+  background: #f5f4f0e8;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+.ak-thumbnails {
+  display: none;
+  gap: 10px;
+  margin-top: 12px;
+  overflow: auto;
+  padding: 3px;
+}
+.ak-product.is-enhanced .ak-thumbnails {
+  display: flex;
+}
+.ak-thumbnails button {
+  position: relative;
+  flex: 0 0 70px;
+  height: 78px;
+  padding: 4px;
+  border: 1px solid transparent;
+  background: transparent;
+}
+.ak-thumbnails button[aria-pressed="true"] {
+  border-color: var(--ak-olive);
+}
+.ak-thumbnails img {
+  width: 100%;
+  height: 100%;
+  background: #e8e7e1;
+  object-fit: contain;
+}
+.ak-thumbnails span {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: var(--ak-paper);
+  font-size: 9px;
+}
+.ak-product-info {
+  min-width: 0;
+  padding: 12px 0 0;
+}
+.ak-eyebrow {
+  margin: 0 0 14px;
+  color: var(--ak-muted);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.ak-eyebrow span {
+  padding: 0 8px;
+}
+.ak-product h1 {
+  margin: 0;
+}
+.ak-checkout-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+.ak-buy-now {
+  min-height: 52px;
+  padding: 14px 18px;
+  border: 1px solid var(--ak-olive);
+  background: transparent;
+  color: var(--ak-olive);
+  font-size: 11px;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+}
+.ak-buy-now:hover {
+  background: #e9e9e2;
+  font: 400 clamp(44px, 5.3vw, 74px)/0.99 SenseSerif, Georgia, serif;
+  letter-spacing: -2.6px;
+  overflow-wrap: anywhere;
+}
+.ak-subtitle {
+  margin: 12px 0 0;
+  color: var(--ak-muted);
+  font: 20px/1.45 SenseSerif, Georgia, serif;
+}
+.ak-story,
+.ak-accords {
+  margin-top: 24px;
+}
+.ak-story h2,
+.ak-accords h2 {
+  margin: 0 0 8px;
+  font: 500 12px/1.4 SenseSans, Arial, sans-serif;
+  letter-spacing: 0.2px;
+}
+.ak-richtext {
+  color: #66665f;
+  font-size: 13px;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+.ak-richtext p {
+  margin: 0 0 9px;
+}
+.ak-richtext p:last-child {
+  margin-bottom: 0;
+}
+.ak-richtext ul,
+.ak-richtext ol {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+.ak-richtext img {
+  max-width: 100%;
+  height: auto;
+}
+.ak-richtext a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.ak-richtext table {
+  display: block;
+  max-width: 100%;
+  overflow: auto;
+}
+.ak-accords {
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--ak-line);
+}
+.ak-price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 22px;
+  font-size: 18px;
+}
+.ak-price s {
+  color: var(--ak-muted);
+  font-size: 14px;
+}
+.ak-price small {
+  flex-basis: 100%;
+  font-size: 11px;
+}
+.ak-sale {
+  padding: 3px 8px;
+  border: 1px solid var(--ak-line);
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.ak-tax-note {
+  margin: 5px 0 20px;
+  color: var(--ak-muted);
+  font-size: 10px;
+}
+.ak-tax-note a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.ak-field-label {
+  display: block;
+  margin: 0 0 8px;
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.ak-variant-picker {
+  display: none;
+}
+.ak-product.is-enhanced .ak-variant-picker {
+  display: grid;
+  gap: 16px;
+  margin: 20px 0;
+}
+.ak-option-selector {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.ak-option-selector legend {
+  margin-bottom: 9px;
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.ak-option-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ak-option-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+.ak-option-pill {
+  display: inline-flex;
+  min-width: 48px;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 15px;
+  border: 1px solid #c9c8c0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ak-ink);
+  font-size: 11px;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+.ak-option-pill:hover {
+  border-color: var(--ak-olive);
+}
+.ak-option-input:checked + .ak-option-pill {
+  border-color: var(--ak-olive);
+  background: var(--ak-olive);
+  color: var(--ak-paper);
+}
+.ak-option-input:focus-visible + .ak-option-pill {
+  outline: 2px solid var(--ak-olive);
+  outline-offset: 3px;
+}
+.ak-no-script-variant {
+  margin: 20px 0;
+}
+.ak-select-row {
+  display: flex;
+  gap: 8px;
+}
+.ak-select-row select {
+  width: 100%;
+  min-width: 0;
+  padding: 13px 14px;
+  border: 1px solid #b9b9b0;
+  border-radius: 0;
+  background: transparent;
+}
+.ak-update {
+  padding: 10px;
+  border: 1px solid #b9b9b0;
+  background: transparent;
+}
+.ak-product.is-enhanced .ak-update {
+  display: none;
+}
+.ak-availability {
+  margin: 15px 0 17px;
+  font-size: 11px;
+}
+.ak-availability span {
+  margin-right: 7px;
+  color: #526f4c;
+  font-size: 8px;
+}
+.ak-purchase-row {
+  display: flex;
+  gap: 10px;
+}
+.ak-quantity {
+  display: flex;
+  flex: 0 0 116px;
+  align-items: center;
+  height: 52px;
+  border: 1px solid #b9b9b0;
+  border-radius: 999px;
+  overflow: hidden;
+  background: transparent;
+}
+.ak-quantity button {
+  width: 34px;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 18px;
+  transition: background-color 160ms ease;
+}
+.ak-quantity button:hover {
+  background: #e9e9e2;
+}
+.ak-quantity input {
+  width: 46px;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  text-align: center;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+.ak-quantity input::-webkit-inner-spin-button {
+  appearance: none;
+}
+.ak-add {
+  display: flex;
+  flex: 1;
+  min-height: 52px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border: 1px solid var(--ak-olive);
+  border-radius: 999px;
+  background: var(--ak-olive);
+  color: #fff !important;
+  font-size: 11px !important;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  text-decoration: none !important;
+  box-shadow: none;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease;
+}
+.ak-product .ak-add:hover {
+  border-color: #384b3a;
+  background: #384b3a;
+  color: #fff !important;
+  box-shadow: none;
+  transform: none;
+}
+.ak-product .ak-add:active {
+  background: #1d2b20;
+}
+.ak-product .ak-add:disabled:hover {
+  border-color: var(--ak-olive);
+  background: var(--ak-olive);
+}
+.ak-add span {
+  font-size: 19px;
+}
+.ak-product .ak-buy-now {
+  min-height: 52px;
+  padding: 14px 18px;
+  border: 1px solid var(--ak-olive);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ak-olive);
+  font-size: 11px;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: none;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease;
+}
+.ak-product .ak-buy-now:hover {
+  border-color: var(--ak-olive);
+  background: var(--ak-olive);
+  color: var(--ak-paper);
+  box-shadow: none;
+  transform: none;
+}
+.ak-product .ak-buy-now:active {
+  background: #1d2b20;
+}
+.ak-express {
+  margin-top: 9px;
+}
+.ak-express .shopify-payment-button__button {
+  min-height: 48px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.ak-express .shopify-payment-button__more-options {
+  margin-top: 7px;
+  color: var(--ak-muted);
+  font-size: 10px;
+}
+.ak-help {
+  margin: 12px 0 0;
+  color: var(--ak-muted);
+  font-size: 10px;
+  text-align: center;
+}
+.ak-feedback {
+  margin: 8px 0;
+  font-size: 12px;
+}
+.ak-feedback:empty {
+  display: none;
+}
+.ak-promises {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 24px 0 0;
+  padding: 18px 0;
+  border-top: 1px solid var(--ak-line);
+  border-bottom: 1px solid var(--ak-line);
+  list-style: none;
+}
+.ak-promises li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ak-promises li + li {
+  padding-left: 12px;
+  border-left: 1px solid var(--ak-line);
+}
+.ak-promises span {
+  font-size: 10px;
+}
+.ak-promises small {
+  color: var(--ak-muted);
+  font-size: 9px;
+  line-height: 1.5;
+}
+.ak-details {
+  margin-top: 24px;
+  border-top: 1px solid var(--ak-line);
+}
+.ak-details details {
+  border-bottom: 1px solid var(--ak-line);
+}
+.ak-details summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 0;
+  list-style: none;
+  cursor: pointer;
+  font-size: 12px;
+}
+.ak-details summary::-webkit-details-marker {
+  display: none;
+}
+.ak-details summary span {
+  font-size: 19px;
+  line-height: 1;
+  transition: transform 180ms ease;
+}
+.ak-details details[open] summary span {
+  transform: rotate(45deg);
+}
+.ak-details .ak-richtext {
+  padding: 0 0 16px;
+}
+.ak-share {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+.ak-share > span {
+  margin-right: auto;
+  color: var(--ak-muted);
+  font-size: 10px;
+}
+.ak-share a,
+.ak-share button {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid var(--ak-line);
+  border-radius: 50%;
+  background: transparent;
+}
+.ak-share svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+.ak-share svg[fill="none"] {
+  fill: none;
+}
+.ak-share a:hover,
+.ak-share button:hover {
+  background: #e9e9e2;
+}
+.ak-related {
+  margin-top: clamp(64px, 9vw, 120px);
+}
+.ak-bundle {
+  margin-top: clamp(64px, 9vw, 120px);
+}
+.ak-bundle-heading {
+  margin-bottom: 22px;
+}
+.ak-bundle-heading h2 {
+  margin: 0;
+  font: 400 clamp(30px, 4vw, 48px)/1.1 SenseSerif, Georgia, serif;
+  letter-spacing: -1.2px;
+}
+.ak-bundle-product {
+  text-align: left;
+}
+.ak-bundle-add,
+.ak-related-add {
+  display: flex;
+  width: 100%;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px;
+  padding: 0 14px;
+  border: 1px solid var(--ak-olive);
+  border-radius: 999px;
+  background: var(--ak-olive);
+  color: #fff !important;
+  font: 600 10px/1 SenseSans, Arial, sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    transform 180ms ease;
+}
+.ak-bundle-add:hover:not(:disabled),
+.ak-related-add:hover:not(:disabled) {
+  transform: scale(1.06);
+  background: transparent;
+  color: #fff !important;
+}
+.ak-bundle-add:disabled,
+.ak-related-add:disabled {
+  border-color: var(--ak-line);
+  background: #e9e8e1;
+  color: var(--ak-muted);
+  cursor: not-allowed;
+}
+.ak-bundle-status {
+  min-height: 0;
+  margin: 10px 0 0;
+  color: var(--ak-muted);
+  font-size: 11px;
+}
+.ak-related-status {
+  min-height: 0;
+  margin: 10px 0 0;
+  color: var(--ak-muted);
+  font-size: 11px;
+}
+.ak-bundle-product .ak-related-add {
+  margin-top: 12px;
+}
+.ak-bundle-product .ak-related-product-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.ak-bundle-product .ak-related-product-link .ak-related-name,
+.ak-bundle-product .ak-related-product-link .ak-related-type {
+  display: block;
+}
+.ak-bundle-product .ak-related-price {
+  margin-top: 8px;
+}
+.ak-related-product-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.ak-related-product-link .ak-related-name,
+.ak-related-product-link .ak-related-type {
+  display: block;
+}
+.ak-related-product-link .ak-related-price {
+  display: block;
+}
+.ak-related-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+.ak-related-heading .ak-eyebrow {
+  margin-bottom: 8px;
+}
+.ak-related-heading h2 {
+  margin: 0;
+  font: 400 clamp(30px, 4vw, 48px)/1.1 SenseSerif, Georgia, serif;
+  letter-spacing: -1.2px;
+}
+.ak-related-heading > a {
+  flex: 0 0 auto;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--ak-line);
+  font-size: 11px;
+}
+.ak-related-heading > a span {
+  margin-left: 8px;
+}
+.ak-related-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.ak-related-card {
+  position: relative;
+  display: flex;
+  min-height: 190px;
+  flex-direction: column;
+  justify-content: end;
+  padding: 20px;
+  overflow: hidden;
+  border: 1px solid var(--ak-line);
+  border-radius: 18px;
+  background: #eeede7;
+  transition:
+    background-color 180ms ease,
+    transform 180ms ease;
+}
+.ak-related-card.has-image {
+  min-height: 0;
+  justify-content: initial;
+  padding: 12px;
+}
+.ak-related-image {
+  position: static;
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  margin-bottom: 14px;
+  border-radius: 10px;
+  background: #e5e3dc;
+  object-fit: cover;
+}
+.ak-related-card:hover {
+  transform: translateY(-3px);
+  background: #e9e8e0;
+}
+.ak-related-index {
+  position: absolute;
+  top: 17px;
+  right: 18px;
+  z-index: 1;
+  color: #6f6d63;
+  font-size: 10px;
+}
+.ak-related-name {
+  display: block;
+  overflow: hidden;
+  font: 400 16px/1.25 SenseSerif, Georgia, serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ak-related-type {
+  margin-top: 6px;
+  color: var(--ak-muted);
+  font-size: 12px;
+}
+.ak-related-price {
+  margin-top: 14px;
+  font-size: 11px;
+}
+@media (min-width: 1600px) {
+  .ak-product {
+    padding-right: clamp(64px, 5vw, 112px);
+    padding-left: clamp(64px, 5vw, 112px);
+  }
+}
+@media (max-width: 899px) {
+  .ak-product {
+    padding: 18px 20px 58px;
+  }
+  .ak-product-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+  .ak-gallery {
+    position: static;
+  }
+  .ak-media-stage {
+    border-radius: 18px;
+  }
+  .ak-media {
+    aspect-ratio: 1;
+  }
+  .ak-product-info {
+    padding: 0;
+  }
+  .ak-related {
+    margin-top: 64px;
+  }
+  .ak-related-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ak-related-card {
+    min-height: 160px;
+  }
+  .ak-product h1 {
+    font-size: clamp(44px, 11vw, 62px);
+  }
+  .ak-breadcrumb {
+    margin-bottom: 16px;
+  }
+}
+@media (max-width: 420px) {
+  .ak-promises {
+    gap: 8px;
+  }
+  .ak-promises li + li {
+    padding-left: 8px;
+  }
+  .ak-purchase-row {
+    gap: 7px;
+  }
+  .ak-related-heading {
+    align-items: start;
+  }
+  .ak-bundle-heading h2 {
+    font-size: 30px;
+  }
+  .ak-related-heading h2 {
+    font-size: 30px;
+  }
+  .ak-related-heading > a {
+    margin-top: 30px;
+    font-size: 10px;
+  }
+  .ak-related-card {
+    min-height: 145px;
+    padding: 14px;
+  }
+  .ak-quantity {
+    flex-basis: 105px;
+  }
+  .ak-quantity button {
+    width: 30px;
+  }
+  .ak-quantity input {
+    width: 43px;
+  }
+}
+</style><script src="shopify/assets/ak-product.js" defer></script></head>
+<body><div class="preview-note">DESIGN PREVIEW · Product photography intentionally omitted · Shopify catalog supplies final product data</div><header class="preview-header"><a class="preview-logo" href="index.html">AK &amp; Co.</a><nav aria-label="Main navigation"><a href="index.html#favorites">Collection</a><a href="https://akandco.co/">Our brand ↗</a></nav></header>
+<main><ak-product class="ak-product"><nav class="ak-breadcrumb" aria-label="Breadcrumb"><a href="index.html">Home</a><span>/</span><a href="index.html#favorites">Collection</a><span>/</span><span aria-current="page">Blue Oudh</span></nav>
+<div class="ak-product-grid"><div class="ak-gallery"><div class="ak-media-stage"><div class="ak-media" data-media="1" data-active><div class="preview-image-placeholder" role="img" aria-label="Product image intentionally omitted">Blue Oudh</div></div><span class="ak-image-caption">AK &amp; Co. / Eau de parfum</span></div></div>
+<div class="ak-product-info"><p class="ak-eyebrow">AK &amp; Co. <span>/</span> Eau de parfum</p><h1>Blue Oudh</h1><p class="ak-subtitle">Find your everyday signature.</p>
+<section class="ak-story"><h2>The scent experience</h2><div class="ak-richtext"><p>A warm, expressive fragrance built around rich woods and a quietly modern signature.</p></div></section><section class="ak-accords"><h2>Olfactory notes</h2><div class="ak-richtext"><p>Australian sandalwood, cardamom, iris and amber.</p></div></section>
+<div class="ak-price"><span>₹899.00 – ₹1,299.00</span></div><p class="ak-tax-note">Shipping calculated at checkout.</p>
+<fieldset class="ak-option-selector"><legend>Choose size</legend><div class="ak-option-values"><input class="ak-option-input" id="preview-size-30" type="radio" name="sample-size" value="30 ml" checked><label class="ak-option-pill" for="preview-size-30">30 ml</label><input class="ak-option-input" id="preview-size-50" type="radio" name="sample-size" value="50 ml"><label class="ak-option-pill" for="preview-size-50">50 ml</label><input class="ak-option-input" id="preview-size-100" type="radio" name="sample-size" value="100 ml"><label class="ak-option-pill" for="preview-size-100">100 ml</label></div></fieldset><p class="ak-availability">Availability supplied by Shopify</p>
+<form id="preview-form"><label class="ak-field-label" for="quantity">Quantity</label><div class="ak-purchase-row"><div class="ak-quantity"><button type="button" data-quantity="-1" aria-label="Decrease quantity">−</button><input id="quantity" name="quantity" type="number" min="1" max="99" value="1" inputmode="numeric"><button type="button" data-quantity="1" aria-label="Increase quantity">+</button></div></div><div class="ak-checkout-buttons"><button class="ak-add" type="submit" name="add-to-cart">Add to bag <span aria-hidden="true">↗</span></button><button class="ak-buy-now" type="submit" name="buy-now">Buy now</button></div></form><p class="ak-feedback" role="status"></p><p class="ak-help">Find your everyday signature.</p>
+<ul class="ak-promises" aria-label="Shopping benefits"><li><span>Fast shipping</span><small>Tracked delivery</small></li><li><span>Secure checkout</span><small>Powered by Shopify</small></li><li><span>Easy returns</span><small>Simple support</small></li></ul>
+<div class="ak-details"><details><summary>Shipping &amp; delivery<span aria-hidden="true">+</span></summary><div class="ak-richtext">Your store’s shipping policy appears here automatically.</div></details><details><summary>Returns<span aria-hidden="true">+</span></summary><div class="ak-richtext">Your store’s return policy appears here automatically.</div></details></div>
+<div class="ak-share"><span>Share this scent</span><a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fakandco.co" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 22v-9h3l.5-4H14V7c0-1.2.4-2 2-2h2V1.4A24 24 0 0 0 15 1c-3 0-5 1.8-5 5v3H7v4h3v9z"/></svg></a><a href="https://x.com/intent/post?url=https%3A%2F%2Fakandco.co" target="_blank" rel="noopener noreferrer" aria-label="Share on X"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3L12 14.6 5.5 22H2.4l8.2-9.4L1 2h6.5l4.4 6.7L18.9 2Zm-1.1 18h1.7L6.6 3.9H4.8L17.8 20Z"/></svg></a><button type="button" data-copy-link aria-label="Copy product link">↗</button></div>
+</div></div><section class="ak-bundle" hidden aria-labelledby="preview-frequently-bought"><div class="ak-bundle-heading"><p class="ak-eyebrow">Continue exploring</p><h2 id="preview-frequently-bought">Frequently bought together</h2></div><div class="ak-bundle-items ak-related-grid"></div><p class="ak-bundle-status" role="status" aria-live="polite"></p></section><section class="ak-related" aria-labelledby="preview-recommendations"><div class="ak-related-heading"><div><p class="ak-eyebrow">Continue exploring</p><h2 id="preview-recommendations">You might also like</h2></div><a href="index.html#favorites">View all <span aria-hidden="true">↗</span></a></div><div class="ak-related-grid"><a class="ak-related-card" href="index.html#favorites"><span class="ak-related-index">01</span><span class="ak-related-name">Veridian Mist</span><span class="ak-related-type">Eau de parfum</span><span class="ak-related-price">₹899.00</span></a><a class="ak-related-card" href="index.html#favorites"><span class="ak-related-index">02</span><span class="ak-related-name">Flora Obscura</span><span class="ak-related-type">Eau de parfum</span><span class="ak-related-price">₹999.00</span></a><a class="ak-related-card" href="index.html#favorites"><span class="ak-related-index">03</span><span class="ak-related-name">Fleur de Sel</span><span class="ak-related-type">Eau de parfum</span><span class="ak-related-price">₹1,299.00</span></a><a class="ak-related-card" href="index.html#favorites"><span class="ak-related-index">04</span><span class="ak-related-name">Céleste Mandarine</span><span class="ak-related-type">Eau de parfum</span><span class="ak-related-price">₹1,499.00</span></a></div></section></ak-product></main><footer class="preview-footer"><span>AK &amp; Co. / A scent of your own.</span><a href="index.html">Back to storefront ↗</a></footer><script>document.querySelector('#preview-form').addEventListener('submit',event=>{event.preventDefault();document.querySelector('.ak-feedback').textContent=event.submitter?.name==='buy-now'?'Design preview — checkout is not connected yet.':'Design preview — cart is available when installed in Shopify.';});</script><script src="product-catalog.js"></script><script src="product-page.js"></script><script>document.querySelector(".ak-product").addEventListener("ak:add-product",event=>{const item=window.SENSE_PRODUCTS[event.detail.productIndex];document.querySelector(".ak-bundle-status").textContent=item?`Design preview — add-to-cart for ${item.name} is available when installed in Shopify.`:"This product is unavailable.";});</script></body></html>
